@@ -24,7 +24,7 @@ def daire_ic_alan(contour1 , contour2 , img):
 
 img_liste = ["1.png" ,"2.png","3.png","5.png","6.png"]
 
-img = cv2.imread("2.png")
+img = cv2.imread("5.png")
 
 hsv = cv2.cvtColor(img.copy(),cv2.COLOR_BGR2HSV)
 
@@ -87,7 +87,36 @@ puan_alan_2 = daire_ic_alan(cnts_daire[4] , cnts_daire[3] , img)
 
 alanlar = [puan_alan_1 , puan_alan_2,puan_alan_3 , puan_alan_4 , puan_alan_5]
 
+# Her puan alanı için karşılık gelen puanı belirle
+puan_degerleri = [1, 2, 3, 4, 5]
 
+toplam_puan = 0
+
+# Her hedef koordinatı için merkezini al
+for (x, y, w, h) in hedef_kordinatları:
+    hedef_merkez = (x + w // 2, y + h // 2)
+    
+    puan_bulundu = False
+    for i, alan in enumerate(alanlar):  # 0'dan 4'e kadar
+        if hedef_merkez in alan:
+            toplam_puan += puan_degerleri[i]
+            puan_bulundu = True
+            cv2.putText(img, str(puan_degerleri[i]), hedef_merkez, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 127, 1)
+            break
+
+    if not puan_bulundu:
+        # Puan bölgesi dışında kalan hedefler
+        cv2.putText(img, "0", hedef_merkez, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 127, 1)
+
+# Toplam puanı yazdır
+print("Toplam Puan:", toplam_puan)
+
+# Görselleştir
+cv2.putText(img, f"Toplam: {toplam_puan}", (20, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, 127, 2)
+
+cv2.imshow("Sonuc", img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 
 
 
